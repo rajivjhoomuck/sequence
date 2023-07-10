@@ -1,98 +1,129 @@
 import os
 import sys
 import shutil
+import json
 
 # Paths are from Intermediate
-mod_dir = '../../Modules'
+mod_dir = "../../Chapters"
+vol_count = 36
 
 def usage():
-    print('Usage: python3 build_workbook.py <i>')
-    print('   or  python3 build_workbook.py all')
+    print("Usage: python3 build_workbook.py <i>")
+    print("   or  python3 build_workbook.py all")
     sys.exit(1)
 
-def path_for_chapter_locale_list(mod, chapter, locale_list):
+
+def path_for_chapter_locale_list(chapter, locale_list):
     # Assumes mod has already been stripped of whitespace
     # FIXME: When we start localizing, this will need to be smarter
-    return os.path.join(mod_dir, mod, '{}-en_US.tex'.format(chapter))
+    return os.path.join(mod_dir, chapter, "en_US", "student.tex")
 
-def build_book(book_id, locale_list, paper_size):
-    output_tex_path = 'workbook-{}-{}.tex'.format(book_id, locale_list[0])
-    output_pdf_path = 'workbook-{}-{}.pdf'.format(book_id, locale_list[0])
-    final_pdf_path = '../{}'.format(output_pdf_path)
+
+def build_book(book_id, config, draft):
+    locale_list = config["Languages"]
+    paper_size = config["Paper"]
+    tool = config["LatexExecutable"]
+
+    # Where are things going?
+    output_tex_path = "workbook-{}-{}.tex".format(book_id, locale_list[0])
+    output_pdf_path = "workbook-{}-{}.pdf".format(book_id, locale_list[0])
+    final_pdf_path = f"../Workbooks/{output_pdf_path}"
     if os.path.exists(final_pdf_path):
         os.remove(final_pdf_path)
-    output_tex = open(output_tex_path, 'w')
+
+    # Open the tex file
+    output_tex = open(output_tex_path, "w")
 
     # Write the header
-    header_file = open('../Support/bookheader.tex', 'r')
+    header_file = open("../Support/bookheader.tex", "r")
     header = header_file.read()
     header_file.close()
     output_tex.write(header)
-    
+
     # Which modules go into the book?
-    modlist_filename = 'modlist_{}.txt'.format(book)
+    modlist_filename = "book_{}.txt".format(book)
     modlist_path = os.path.join(mod_dir, modlist_filename)
-    modlist = open(modlist_path, 'r')
-    mods = modlist.readlines()
+    if not os.path.exists(modlist_path):
+        print(f"Chapter file {modlist_path} doesn't exist")
+        return None
+
+    modlist = open(modlist_path, "r")
+    chapters = modlist.readlines()
     modlist.close()
-    
-    for mod in mods:
-        trimmed_mod = mod.strip()
-        if len(trimmed_mod) > 3:
+
+    for chapter in chapters:
+        trimmed_chapter = chapter.strip()
+        if len(trimmed_chapter) > 0:
             # Look for the graphics in the module directory
-            gpath_string = '\\graphicspath{{{{../../Modules/{}/}}}}\n'.format(trimmed_mod)
+            gpath_string =f"\\graphicspath{{{{../../Chapters/{trimmed_chapter}/{locale_list[0]}}}}}\n"
             output_tex.write(gpath_string)
-            
-            # Which chapters go into the module?
-            chapterlist_path = os.path.join(mod_dir, trimmed_mod, 'chapterlist.txt')
-            chapterlist = open(chapterlist_path)
-            chapters = chapterlist.readlines()
-            chapterlist.close()
-            for chapter in chapters:
-                trimmed_chapter = chapter.strip()
-                if len(trimmed_chapter) > 1:
-                    chapter_path = path_for_chapter_locale_list(trimmed_mod, trimmed_chapter, locale_list)
-                    include_string = '\\input{{{}}}\n'.format(chapter_path)
-                    output_tex.write(include_string)
+
+            chapter_path = path_for_chapter_locale_list(trimmed_chapter, locale_list)
+            include_string = "\\input{{{}}}\n".format(chapter_path)
+            output_tex.write(include_string)
 
     # Write the footer
-    footer_file = open('../Support/bookfooter.tex', 'r')
+    footer_file = open("../Support/bookfooter.tex", "r")
     footer = footer_file.read()
     footer_file.close()
     output_tex.write(footer)
     output_tex.close()
-    os.system('lualatex {}'.format(output_tex_path))
+    os.system(f"{tool} {output_tex_path}")
 
-    # If a pdf was made, run it again to get cross-references right
-    if os.path.exists(output_pdf_path):
-        os.system('lualatex {}'.format(output_tex_path))
-        shutil.move(output_pdf_path, final_pdf_path)
-    else:
-        print('Build failed')
-    
-                        
-if not os.path.exists('Intermediate'):
-    os.mkdir('Intermediate')
+    if not draft:
+        # If a pdf was made, run it again to get cross-references right
+        if not draft and os.path.exists(output_pdf_path):
+            os.system(f"{tool} {output_tex_path}")
+            shutil.move(output_pdf_path, final_pdf_path)
+        else:
+            print(f"Build failed for {final_pdf_path}")
+            return None
 
-if not os.path.exists('build.cfg'):
-    shutil.copyfile('Support/default.cfg', 'user.cfg')
+    return output_pdf_path
 
+# Make any directories we need
+needed_dirs = ["Intermediate", "Workbooks"]
+for dir in needed_dirs:
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+# If this is the first time, copy the default config
+if not os.path.exists("user.cfg"):
+    shutil.copyfile("Support/default.cfg", "user.cfg")
+
+# Read the config
+with open("user.cfg", "r") as config_fd:
+    config = json.load(config_fd)
+
+# Check command line
 if len(sys.argv) < 2:
     usage()
-    
+
+# Deal with first arg
 arg1 = sys.argv[1]
-if arg1 == 'all':
-    print ('all not implemented yet')
-    sys.exit(1)
+if arg1 == "all":
+    book_nums = [str(x).zfill(2) for x in range(1, vol_count + 1)]
+else:
+    book_nums = [arg1.zfill(2)]
 
-book_num = int(arg1)
-if book_num == 0:
-    usage()
+# We build in the Intermediate file
+os.chdir("Intermediate")
 
-book = str(book_num).zfill(2)
-print ('Building workbook ', book)
+# Keep track of successes and failures
+newfilenames = []
+failednumbers = []
+for book in book_nums:
+    print(f"Building book {book}")
+    newfile = build_book(book, config, False)
+    if newfile is None:
+        failednumbers.append(book)
+    else:
+        newfilenames.append(newfile)
 
-os.chdir('Intermediate')
+if len(newfilenames) > 0:
+    print("\n**** Created ****")
+    for filename in newfilenames:
+        print(filename)
 
-build_book(book, ['en_US', 'it_IT'], 'Letter')
-                        
+if len(failednumbers) > 0:
+    print(f"**** Failures: {failednumbers} *****")

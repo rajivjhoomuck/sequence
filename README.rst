@@ -1,4 +1,4 @@
-The Hillegass Sequence
+The Technical Sequence
 ======================
 
 The workforce of the future will demand scientists, engineers,
@@ -20,6 +20,7 @@ a working knowledge of:
 
 * Math through linear algebra and vector calculus
 * Python programming
+* Basic algorithms and data structures (probably in C++)
 * Physics that an engineer would know at the end of the first year of university
 * Probability and statistics
 * Basic data science and machine learning techniques
@@ -72,31 +73,9 @@ following tests:
 * AP Physics C: Mechanics
 * AP Physics C: Electricity and Magnetism
 * AP Statistics
-* The TensorFlow Developer Certificate
 
 Politically, it is hoped that this will also make the sequence easier to
 adopt in schools.
-
-Programming Language and Software
----------------------------------
-
-This sequence uses Python, and there are compromises there.  If we were
-teaching to the current AP Computer Science A test, we would use
-Java. However, given the exploratory nature of the programming the
-student will be doing, Python and its extensive libraries are the
-obvious choice.
-
-Julia, which is a more elegant and efficient language, would also be a
-good choice, but at this time Python is a more desireable skill in
-industry. We will use Python.
-
-For simple problems, the student will use a speadsheet. We are not
-specifying which spreadsheet program the student must use, but the
-book will use Google Sheets.
-
-The student can do this sequence using only open source software. This
-lowers the cost of software to zero, and empowers the student by
-inviting them to explore the foundational code they rely upon.
 
 Markup
 ------
@@ -125,7 +104,7 @@ You will need to have installed git, Python 3, and LaTeX.
 
 Clone the github repository::
   
-  git clone https://github.com/hillegass/sequence.git
+  git clone https://github.com/TheKontinua/sequence.git
 
 You will also need some fonts from the `Google Font Collection <https://fonts.google.com/>`_ :
 
@@ -164,7 +143,56 @@ To delete all the pdfs and tgz files in ``Build`` and the entire ``Intermediate`
 
   python3 clean.py
 
+If you have unusual needs (strange paper size, strange location for lualatex), edit \
+your ``Build/user.cfg`` file.
+
+Programming Language and Software
+---------------------------------
+
+This sequence uses Python, and there are compromises there.  If we were
+teaching to the current AP Computer Science A test, we would use
+Java. However, given the exploratory nature of the programming the
+student will be doing, Python and its extensive libraries are the
+obvious choice.
+
+Julia, which is a more elegant and efficient language, would also be a
+good choice, but at this time Python is a more desireable skill in
+industry. We will use Python.
+
+For simple problems, the student will use a speadsheet. We are not
+specifying which spreadsheet program the student must use, but the
+book will use Google Sheets.
+
+For data structures, we will probably write some code in C++. No one
+loves C++, but it makes you think deeply about memory management and the heap vs.
+the stack. Finally whenever a team needs code that is small, fast, and portable, C++ 
+is usually the language we use.
+
+The student can do this sequence using only open source software. This
+lowers the cost of software to zero, and empowers the student by
+inviting them to explore the foundational code they rely upon.
+
+Philosophy
+----------
+
+The ideas covered by this sequence are really powerful. I think the learner's sense of 
+empowerment will motivate them, if we don't abuse it by spending a lot of time on history 
+and philosophy.  Instead, each chapter says "Here is an idea, and here is an example of 
+how to use it."
+
+We plan to have a mentor's guide that will include the history and
+philosophy behind the ideas, which can be shared with the students
+that care.
+
+This is **not** a project-based approach. We teach an idea and give
+the student a chance to solve a problem with it.  We do not assume
+that the student has access to a lab.  We do not assume that there is
+a teacher available to help the student set up an experiment.
+
+Once again, this course is not for everybody. It assumes the student
+is curious and willing to struggle a little to satisfy that curiosity.
+
 More
 ----
 
-Check out the `Topic List <ProjectDocs/topic_list.rst>`_.
+Check out the `Outline <ProjectDocs/outline.rst>`_. 

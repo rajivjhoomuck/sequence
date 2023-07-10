@@ -749,10 +749,8 @@
 \vskip24pt
 \fboxsep=0pt
 \colorbox{white}{\vtop{
-{\fboxrule=2pt
-\fcolorbox{sblue}{white}{
 \includegraphics
-[width=1.75in]{../Support/desmos-graph-ColorNoBackground.pdf}}}
+[width=1.75in]{../Support/color_spiral.pdf}
 %\vskip20pt%36pt
 %% minus four seems about right
 %\vskip-4pt
@@ -781,11 +779,8 @@
 \vskip8pt
 \vskip24pt
 \vtop{
-{\fboxsep=0pt
-\fboxrule=1.5pt
-\fcolorbox{sdkblue}{white}{
 \includegraphics
-[width=1in]{../Support/graph-thicklines.pdf}}}
+[width=1in]{../Support/color_spiral.pdf}
 \vskip12pt
   {%\color{ForestGreen}
 \color{sdkblue}
@@ -806,10 +801,11 @@
 
 \usepackage{graphicx}
 \usepackage{tikz}
-\usepackage{tikz}
 \usepackage{tkz-euclide}
 \usepackage{pgfplots}
 \usetikzlibrary{calc,patterns,angles,quotes}
+\usepackage[american]{circuitikz}
+\usepackage{tikz-3dplot}
 
 %%%%%%%%%%%%%%%%%%
 %% Important Box
@@ -874,6 +870,7 @@
 %% If wanted, makes more graceful math fonts:
 \usepackage{euler}
 \usepackage{fontspec}
+\usepackage{listings}
 
 %% For strikethrough
 \usepackage{cancel}
@@ -1252,15 +1249,18 @@ width 0pt
 \setlength{\parskip}{\baselineskip}
 \setlength{\parindent}{0pt}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{fancyvrb}
 %\usepackage{bera}
 
 \long\def\boxed#1{{\fboxsep=6pt\fbox {\m@th $\displaystyle #1$}}}
 
 
-\newcommand{\pyfunction}[1] {{\tt #1}} \newcommand{\pyvar}[1] {{\tt 
-#1}} \newcommand{\pytype}[1] {{\tt #1}} \newcommand{\filename}[1] 
-{{\tt #1}} 
+\newcommand{\pyfunction}[1] {{\tt #1}} 
+\newcommand{\pyvar}[1] {{\tt #1}}
+\newcommand{\pytype}[1] {{\tt #1}} 
+\newcommand{\filename}[1] {{\tt #1}} 
+\newcommand{\newterm}[1] {{\it #1}} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

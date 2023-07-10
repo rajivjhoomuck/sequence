@@ -1,5 +1,0 @@
-MatterEnergy
-Spreadsheets
-TrianglesCircles
-Polynomials
-DiscreteProbability
